@@ -103,7 +103,7 @@ class Enqueuer implements HookContract
             $actual_path = config('app.plugin_path') . $path;
             if(file_exists($actual_path) && pathinfo($actual_path, PATHINFO_EXTENSION) == 'js')
             {
-                wp_enqueue_script('wpfrm_'.$this->scope.'_js_'. basename($path, '.js'), config('app.plugin_uri') . $path);
+                wp_enqueue_script('wpint_'.$this->scope.'_js_'. basename($path, '.js'), config('app.plugin_uri') . $path);
             }
         });
 
@@ -122,7 +122,7 @@ class Enqueuer implements HookContract
             $actual_path = config('app.plugin_path') . $path;
             if(file_exists($actual_path) && pathinfo($actual_path, PATHINFO_EXTENSION) == 'css')
             {
-                wp_enqueue_style('wpfrm_'.$this->scope.'_css_'. basename($path, '.css'), config('app.plugin_uri') . $path);
+                wp_enqueue_style('wpint_'.$this->scope.'_css_'. basename($path, '.css'), config('app.plugin_uri') . $path);
             }
         });
     }

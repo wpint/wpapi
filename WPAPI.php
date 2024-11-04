@@ -1,7 +1,6 @@
 <?php 
 namespace Wpint\WPAPI;
 
-use Wpint\Support\Exceptions\MethodDoesNotExistException;
 use Wpint\Contracts\Hook\HookContract;
 use Wpint\Contracts\WPAPI\WPAPIContract;
 use Wpint\WPAPI\Cron\Cron;
