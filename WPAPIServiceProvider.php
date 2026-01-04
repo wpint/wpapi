@@ -1,9 +1,9 @@
 <?php 
 namespace Wpint\WPAPI;
 
-use WPINT\Framework\Foundation\Application;
+use WPINT\Core\Foundation\Application;
 use Illuminate\Contracts\Events\Dispatcher;
-use Illuminate\Support\ServiceProvider;
+use WPINT\Core\Foundation\ServiceProvider;
 
 class WPAPIServiceProvider extends ServiceProvider
 {

@@ -837,19 +837,22 @@ class PostType implements HookContract
         return $this;
     }
     
-
     /**
-     * set $rewrite
+     * Undocumented function
      *
-     * @param false|array $rewrite
+     * @param string $slug
+     * @param boolean|null $feeds
+     * @param boolean $withFront
+     * @param boolean $pages
+     * @param [type] $epMask
      * @return self
      */
-    public function rewrite(string $slug, bool $withFront = true, bool $pages = true, int $epMask = EP_NONE, ?bool $feeds) : self
+    public function rewrite(string $slug,  bool $feeds, bool $withFront = true, bool $pages = true, int $epMask = EP_NONE) : self
     {
         if(!$slug) $this->rewrite = false; 
         $this->rewrite['slug'] = $slug ? $slug : $this->name;
         $this->rewrite['with_front']  = $withFront;
-        $this->rewrite['feeds']  = isset($feeds) ? $feeds : $this->has_archive;
+        $this->rewrite['feeds']  =  $feeds;
         $this->rewrite['pages'] = $pages;
         $this->rewrite['ep_mask'] = $epMask;   
         return $this;
