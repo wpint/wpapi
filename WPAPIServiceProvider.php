@@ -28,7 +28,7 @@ class WPAPIServiceProvider extends ServiceProvider
      */
     public function boot(Dispatcher $events)
     {
-
+        
     }
 
 
