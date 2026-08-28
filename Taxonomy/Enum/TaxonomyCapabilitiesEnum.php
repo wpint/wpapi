@@ -10,6 +10,6 @@ enum TaxonomyCapabilitiesEnum : string
     case MANAGE_TERMS = 'manage_terms';
     case EDIT_TERMS = 'edit_terms';
     case DELETE_TERMS = 'delete_terms';
-    case ASSING_TERMS = 'assign_terms';
+    case ASSIGN_TERMS = 'assign_terms';
 
 }

@@ -1,9 +1,8 @@
 <?php 
 namespace Wpint\WPAPI\Shortcode;
 
-use Wpint\Contracts\Hook\HookContract;
+use Wpint\WPAPI\Support\Registrable;
 use Closure;
-use Wpint\Support\CallbackResolver;
 
 /**
  * @method \Wpint\WPAPI\Shortcode\Shortcode tag()
@@ -12,7 +11,7 @@ use Wpint\Support\CallbackResolver;
  * 
  * @see \Wpint\WPAPI\Shortcode\Shortcode
  */
-class Shortcode implements HookContract
+class Shortcode extends Registrable
 {
 
     /**
@@ -38,7 +37,7 @@ class Shortcode implements HookContract
     {
 
         add_shortcode($this->tag, function($attrs, $content){
-            return CallbackResolver::call($this->callback, ["attrs" => $attrs, "content" => $content], false);
+            return $this->resolveCallback($this->callback, ["attrs" => $attrs, "content" => $content], false);
         });
 
     }

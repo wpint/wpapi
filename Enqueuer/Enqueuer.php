@@ -1,17 +1,18 @@
-<?php 
+<?php
 namespace Wpint\WPAPI\Enqueuer;
 
-use Wpint\Contracts\Hook\HookContract;
 use Wpint\WPAPI\Enqueuer\Enum\EnqueuerScopeEnum;
+use Wpint\WPAPI\Support\Registrable;
 
 /**
+ * @method \Wpint\WPAPI\Enqueuer\Enqueuer scope()
  * @method \Wpint\WPAPI\Enqueuer\Enqueuer css()
  * @method \Wpint\WPAPI\Enqueuer\Enqueuer js()
  * @method void register()
- * 
+ *
  * @see \Wpint\WPAPI\Enqueuer\Enqueuer
  */
-class Enqueuer implements HookContract
+class Enqueuer extends Registrable
 {
 
     /**
@@ -67,46 +68,66 @@ class Enqueuer implements HookContract
     }
 
     /**
-     * set js path
+     * queue a script for enqueueing
      *
-     * @param string|array ...$path
+     * @param string $path relative to config('app.plugin_path')/config('app.plugin_uri')
+     * @param string[] $deps
+     * @param string|null $version defaults to the file's mtime for cache-busting
+     * @param bool $inFooter
      * @return self
      */
-    public function js(string|array ...$path) : self
+    public function js(string $path, array $deps = [], ?string $version = null, bool $inFooter = true) : self
     {
-        $this->js = array_merge($this->js, $path);
+        $this->js[] = [
+            'path'      => $path,
+            'deps'      => $deps,
+            'version'   => $version,
+            'in_footer' => $inFooter,
+        ];
         return $this;
     }
 
     /**
-     * set css path
+     * queue a stylesheet for enqueueing
      *
-     * @param string|array ...$path
+     * @param string $path relative to config('app.plugin_path')/config('app.plugin_uri')
+     * @param string[] $deps
+     * @param string|null $version defaults to the file's mtime for cache-busting
+     * @param string $media
      * @return self
      */
-    public function css(string|array ...$path) : self
+    public function css(string $path, array $deps = [], ?string $version = null, string $media = 'all') : self
     {
-        $this->css = array_merge($this->css, $path);
+        $this->css[] = [
+            'path'    => $path,
+            'deps'    => $deps,
+            'version' => $version,
+            'media'   => $media,
+        ];
         return $this;
     }
 
     /**
-     * Execute wp method wp_enqueue_scripts
+     * Execute wp method wp_enqueue_script
      *
      * @return void
      */
     public function jsEnqueuer()
     {
-        collect($this->js)->flatten()
-        ->each(function($path)
+        foreach ($this->js as $asset)
         {
-            $actual_path = config('app.plugin_path') . $path;
-            if(file_exists($actual_path) && pathinfo($actual_path, PATHINFO_EXTENSION) == 'js')
-            {
-                wp_enqueue_script('wpint_'.$this->scope.'_js_'. basename($path, '.js'), config('app.plugin_uri') . $path);
-            }
-        });
+            $actualPath = config('app.plugin_path') . $asset['path'];
 
+            if ( ! ( file_exists($actualPath) && pathinfo($actualPath, PATHINFO_EXTENSION) == 'js' ) ) continue;
+
+            wp_enqueue_script(
+                'wpint_' . $this->scope . '_js_' . basename($asset['path'], '.js'),
+                config('app.plugin_uri') . $asset['path'],
+                $asset['deps'],
+                $asset['version'] ?? filemtime($actualPath),
+                $asset['in_footer']
+            );
+        }
     }
 
     /**
@@ -116,15 +137,20 @@ class Enqueuer implements HookContract
      */
     public function cssEnqueuer()
     {
-        collect($this->css)->flatten()
-        ->each(function($path)
+        foreach ($this->css as $asset)
         {
-            $actual_path = config('app.plugin_path') . $path;
-            if(file_exists($actual_path) && pathinfo($actual_path, PATHINFO_EXTENSION) == 'css')
-            {
-                wp_enqueue_style('wpint_'.$this->scope.'_css_'. basename($path, '.css'), config('app.plugin_uri') . $path);
-            }
-        });
+            $actualPath = config('app.plugin_path') . $asset['path'];
+
+            if ( ! ( file_exists($actualPath) && pathinfo($actualPath, PATHINFO_EXTENSION) == 'css' ) ) continue;
+
+            wp_enqueue_style(
+                'wpint_' . $this->scope . '_css_' . basename($asset['path'], '.css'),
+                config('app.plugin_uri') . $asset['path'],
+                $asset['deps'],
+                $asset['version'] ?? filemtime($actualPath),
+                $asset['media']
+            );
+        }
     }
 
 

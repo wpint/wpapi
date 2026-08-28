@@ -1,9 +1,8 @@
 <?php
 namespace Wpint\WPAPI\Setting;
 
-use Wpint\Support\CallbackResolver;
-use Wpint\Contracts\Hook\HookContract;
 use Wpint\WPAPI\Setting\Enum\OptionGroupEnum;
+use Wpint\WPAPI\Support\Registrable;
 use Illuminate\Support\Str;
 use Closure;
 
@@ -14,11 +13,15 @@ use Closure;
  * @method \Wpint\WPAPI\Setting\Setting fieldTitle()
  * @method \Wpint\WPAPI\Setting\Setting fieldCallback()
  * @method \Wpint\WPAPI\Setting\Setting optionGroup()
+ * @method \Wpint\WPAPI\Setting\Setting sanitizeCallback()
+ * @method \Wpint\WPAPI\Setting\Setting type()
+ * @method \Wpint\WPAPI\Setting\Setting default()
+ * @method \Wpint\WPAPI\Setting\Setting showInRest()
  * @method void register()
- * 
+ *
  * @see \Wpint\WPAPI\Setting\Setting
  */
-class Setting implements HookContract
+class Setting extends Registrable
 {
 
     /**
@@ -64,38 +67,73 @@ class Setting implements HookContract
     private string $optionGroup = OptionGroupEnum::OPTIONS;
 
     /**
+     * Sanitizer applied to the option's value before it's saved.
+     * Defaults to 'sanitize_text_field' — WordPress applies no
+     * sanitization by default, which is a common security gap.
+     *
+     * @var callable|string
+     */
+    private $sanitizeCallback = 'sanitize_text_field';
+
+    /**
+     * $type
+     *
+     * @var string
+     */
+    private string $type;
+
+    /**
+     * $default
+     *
+     * @var mixed
+     */
+    private mixed $default = null;
+
+    /**
+     * $showInRest
+     *
+     * @var bool
+     */
+    private bool $showInRest = false;
+
+    /**
      * Register setting
      *
      * @return void
      */
-    public  function register() 
+    public  function register()
     {
         add_action('admin_init', function(){
 
-            register_setting($this->optionGroup, $this->name);
+            register_setting($this->optionGroup, $this->name, array_filter([
+                'type'              => $this->prop('type'),
+                'sanitize_callback' => $this->sanitizeCallback,
+                'default'           => $this->default,
+                'show_in_rest'      => $this->showInRest,
+            ], fn($value) => $value !== null));
 
             add_settings_section(
                 Str::slug($this->sectionTitle, '_'),
-                $this->sectionTitle, 
+                $this->sectionTitle,
                 function()
                 {
-                    return CallbackResolver::call($this->sectionCallback);
+                    return $this->resolveCallback($this->sectionCallback);
                 },
                 $this->optionGroup
             );
-    
+
             add_settings_field(
                 Str::slug($this->fieldTitle, '_'),
-                $this->fieldTitle, 
+                $this->fieldTitle,
                 function()
                 {
-                    return CallbackResolver::call($this->fieldCallback);
+                    return $this->resolveCallback($this->fieldCallback);
                 },
                 $this->optionGroup,
                 Str::slug($this->sectionTitle, '_')
             );
 
-        });        
+        });
     }
 
     /**
@@ -138,7 +176,7 @@ class Setting implements HookContract
      * set $optionGroup
      *
      * @param string $optionGroup
-     * @return self     
+     * @return self
      */
     public function optionGroup(string $optionGroup) : self
     {
@@ -167,6 +205,54 @@ class Setting implements HookContract
     public function fieldCallback(array|string|Closure $closure) : self
     {
         $this->fieldCallback = $closure;
+        return $this;
+    }
+
+    /**
+     * set $sanitizeCallback
+     *
+     * @param callable $callback
+     * @return self
+     */
+    public function sanitizeCallback(callable $callback) : self
+    {
+        $this->sanitizeCallback = $callback;
+        return $this;
+    }
+
+    /**
+     * set $type
+     *
+     * @param string $type one of 'string', 'boolean', 'integer', 'number', 'array', 'object'
+     * @return self
+     */
+    public function type(string $type) : self
+    {
+        $this->type = $type;
+        return $this;
+    }
+
+    /**
+     * set $default
+     *
+     * @param mixed $default
+     * @return self
+     */
+    public function default(mixed $default) : self
+    {
+        $this->default = $default;
+        return $this;
+    }
+
+    /**
+     * set $showInRest
+     *
+     * @param bool $show
+     * @return self
+     */
+    public function showInRest(bool $show = true) : self
+    {
+        $this->showInRest = $show;
         return $this;
     }
 

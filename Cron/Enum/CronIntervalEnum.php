@@ -1,12 +1,17 @@
-<?php 
+<?php
 namespace Wpint\WPAPI\Cron\Enum;
 
-enum CronInterval
+/**
+ * WordPress cron intervals are open-ended (plugins register their own
+ * via Cron::addCronInterval()), so this stays a plain constants bag
+ * of the built-in intervals rather than a restrictive enum.
+ */
+final class CronIntervalEnum
 {
 
-    const HOURLY = 'hourly';
-    const DAILY = 'daily';
-    const TWICEDAILY  = 'twicedaily';
-    const WEEKLY = 'weekly';
+    public const HOURLY = 'hourly';
+    public const DAILY = 'daily';
+    public const TWICEDAILY = 'twicedaily';
+    public const WEEKLY = 'weekly';
 
 }
