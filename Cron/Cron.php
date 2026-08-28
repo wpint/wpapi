@@ -1,10 +1,9 @@
 <?php 
 namespace Wpint\WPAPI\Cron;
 
-use Wpint\Contracts\Hook\HookContract;
 use Wpint\WPAPI\Cron\CronInterval;
+use Wpint\WPAPI\Support\Registrable;
 use Closure;
-use Wpint\Support\CallbackResolver;
 
 /**
  * @method \Wpint\WPAPI\Cron\Cron name()
@@ -20,7 +19,7 @@ use Wpint\Support\CallbackResolver;
  * 
  * @see \Wpint\WPAPI\Cron\Cron
  */
-class Cron implements HookContract
+class Cron extends Registrable
 {
     
     /**
@@ -40,9 +39,9 @@ class Cron implements HookContract
     /**
      * $start
      *
-     * @var string
+     * @var int Unix timestamp
      */
-    private $start;
+    private int $start;
 
     /**
      * $every
@@ -78,9 +77,9 @@ class Cron implements HookContract
      * @return void
      */
     public function register()
-    { 
+    {
         add_action( $this->name, function(){
-            return CallbackResolver::call($this->execute);
+            return $this->resolveCallback($this->execute);
         } );
 
         if($this->isSingle)
@@ -121,12 +120,12 @@ class Cron implements HookContract
     }
 
     /**
-     * set $start 
+     * set $start
      *
-     * @param string $start
+     * @param int $start Unix timestamp
      * @return self
      */
-    public function start(string $start) : self
+    public function start(int $start) : self
     {
         $this->start = $start;
         return $this;
@@ -225,10 +224,10 @@ class Cron implements HookContract
      */
     private function schedule()
     {
-       
+
         if( ! $this->isScheduled($this->name) )
         {
-            return wp_schedule_event( $this->start, $this->every, $this->name, $this->args, $this->withError );
+            return wp_schedule_event( $this->prop('start', time()), $this->every, $this->name, $this->args, $this->withError );
         }
         return false;
     }
@@ -242,7 +241,7 @@ class Cron implements HookContract
     {
         if( ! $this->isScheduled($this->name) )
         {
-            return wp_schedule_single_event( $this->start, $this->name, $this->args, $this->withError );
+            return wp_schedule_single_event( $this->prop('start', time()), $this->name, $this->args, $this->withError );
         }
         return false;
     }

@@ -1,12 +1,13 @@
-<?php 
+<?php
 namespace Wpint\WPAPI\Enqueuer\Enum;
 
-enum EnqueuerScopeEnum 
+use WPINT\Framework\Include\Traits\EnumToArray;
+
+enum EnqueuerScopeEnum : string
 {
+    use EnumToArray;
 
-    const ADMIN = 'admin';
-
-    const CLIENT = 'client';
-
+    case ADMIN = 'admin';
+    case CLIENT = 'client';
 
 }

@@ -1,9 +1,8 @@
 <?php 
 namespace Wpint\WPAPI\Hook;
 
-use Wpint\Support\CallbackResolver;
-use Wpint\Contracts\Hook\HookContract;
 use Wpint\WPAPI\Hook\Enum\HookTypeEnum;
+use Wpint\WPAPI\Support\Registrable;
 use Closure;
 
 /**
@@ -16,7 +15,7 @@ use Closure;
  * 
  * @see \Wpint\WPAPI\Hook\Hook
  */
-class Hook implements HookContract
+class Hook extends Registrable
 {
     
     /**
@@ -135,9 +134,9 @@ class Hook implements HookContract
 
         if($this->type == HookTypeEnum::ACTION){
             add_action(
-                $this->name, 
+                $this->name,
                 function(...$args){
-                    return CallbackResolver::call($this->callback, $args);
+                    return $this->resolveCallback($this->callback, $args);
                 },
                 $this->priority,
                 $this->acceptedArgs
@@ -146,13 +145,13 @@ class Hook implements HookContract
         };
 
         add_filter(
-            $this->name, 
+            $this->name,
             function(...$args){
-                return CallbackResolver::call($this->callback, $args);
+                return $this->resolveCallback($this->callback, $args);
             },
             $this->priority,
             $this->acceptedArgs
-        );   
+        );
 
     }
 

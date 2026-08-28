@@ -3,53 +3,53 @@ namespace Wpint\WPAPI\PostType;
 
 use WP_REST_Autosaves_Controller;
 use WP_REST_Posts_Controller;
-use Wpint\Contracts\Hook\HookContract;
 use Wpint\WPAPI\PostType\Enum\PostTypeCapabilitiesEnum;
 use Wpint\WPAPI\PostType\Enum\PostTypeSupportsEnum;
+use Wpint\WPAPI\Support\Registrable;
 use Illuminate\Support\Str;
 
 /**
- * @method \Abrz\WPDF\Services\WPAPI\PostType\PostType id()
- * @method \Abrz\WPDF\Services\WPAPI\PostType\PostType name()
- * @method \Abrz\WPDF\Services\WPAPI\PostType\PostType singularName()
- * @method \Abrz\WPDF\Services\WPAPI\PostType\PostType public()
- * @method \Abrz\WPDF\Services\WPAPI\PostType\PostType hasArchive()
- * @method \Abrz\WPDF\Services\WPAPI\PostType\PostType labels()
- * @method \Abrz\WPDF\Services\WPAPI\PostType\PostType description()
- * @method \Abrz\WPDF\Services\WPAPI\PostType\PostType hierarchical()
- * @method \Abrz\WPDF\Services\WPAPI\PostType\PostType excludeFromSearch()
- * @method \Abrz\WPDF\Services\WPAPI\PostType\PostType publiclyQueryable()
- * @method \Abrz\WPDF\Services\WPAPI\PostType\PostType showUI()
- * @method \Abrz\WPDF\Services\WPAPI\PostType\PostType showInMenu()
- * @method \Abrz\WPDF\Services\WPAPI\PostType\PostType showInNavMenus()
- * @method \Abrz\WPDF\Services\WPAPI\PostType\PostType showInAdminBar()
- * @method \Abrz\WPDF\Services\WPAPI\PostType\PostType showInRest()
- * @method \Abrz\WPDF\Services\WPAPI\PostType\PostType restBase()
- * @method \Abrz\WPDF\Services\WPAPI\PostType\PostType restNamespace()
- * @method \Abrz\WPDF\Services\WPAPI\PostType\PostType restControllerClass()
- * @method \Abrz\WPDF\Services\WPAPI\PostType\PostType revisionsRestControllerClass()
- * @method \Abrz\WPDF\Services\WPAPI\PostType\PostType autosaveRestControllerClass()
- * @method \Abrz\WPDF\Services\WPAPI\PostType\PostType lateRouteRegisteration()
- * @method \Abrz\WPDF\Services\WPAPI\PostType\PostType menuPosition()
- * @method \Abrz\WPDF\Services\WPAPI\PostType\PostType menuIcon()
- * @method \Abrz\WPDF\Services\WPAPI\PostType\PostType capabilities()
- * @method \Abrz\WPDF\Services\WPAPI\PostType\PostType capType()
- * @method \Abrz\WPDF\Services\WPAPI\PostType\PostType canExport()
- * @method \Abrz\WPDF\Services\WPAPI\PostType\PostType mapMetaCap()
- * @method \Abrz\WPDF\Services\WPAPI\PostType\PostType supports()
- * @method \Abrz\WPDF\Services\WPAPI\PostType\PostType metaBoxCallback()
- * @method \Abrz\WPDF\Services\WPAPI\PostType\PostType rewrite()
- * @method \Abrz\WPDF\Services\WPAPI\PostType\PostType queryVar()
- * @method \Abrz\WPDF\Services\WPAPI\PostType\PostType deleteWIthUser()
- * @method \Abrz\WPDF\Services\WPAPI\PostType\PostType template()
- * @method \Abrz\WPDF\Services\WPAPI\PostType\PostType templateLock()
- * @method \Abrz\WPDF\Services\WPAPI\PostType\PostType builtIn()
- * @method \Abrz\WPDF\Services\WPAPI\PostType\PostType editLink()
+ * @method \Wpint\WPAPI\PostType\PostType id()
+ * @method \Wpint\WPAPI\PostType\PostType name()
+ * @method \Wpint\WPAPI\PostType\PostType singularName()
+ * @method \Wpint\WPAPI\PostType\PostType public()
+ * @method \Wpint\WPAPI\PostType\PostType hasArchive()
+ * @method \Wpint\WPAPI\PostType\PostType labels()
+ * @method \Wpint\WPAPI\PostType\PostType description()
+ * @method \Wpint\WPAPI\PostType\PostType hierarchical()
+ * @method \Wpint\WPAPI\PostType\PostType excludeFromSearch()
+ * @method \Wpint\WPAPI\PostType\PostType publiclyQueryable()
+ * @method \Wpint\WPAPI\PostType\PostType showUI()
+ * @method \Wpint\WPAPI\PostType\PostType showInMenu()
+ * @method \Wpint\WPAPI\PostType\PostType showInNavMenus()
+ * @method \Wpint\WPAPI\PostType\PostType showInAdminBar()
+ * @method \Wpint\WPAPI\PostType\PostType showInRest()
+ * @method \Wpint\WPAPI\PostType\PostType restBase()
+ * @method \Wpint\WPAPI\PostType\PostType restNamespace()
+ * @method \Wpint\WPAPI\PostType\PostType restControllerClass()
+ * @method \Wpint\WPAPI\PostType\PostType revisionsRestControllerClass()
+ * @method \Wpint\WPAPI\PostType\PostType autosaveRestControllerClass()
+ * @method \Wpint\WPAPI\PostType\PostType lateRouteRegisteration()
+ * @method \Wpint\WPAPI\PostType\PostType menuPosition()
+ * @method \Wpint\WPAPI\PostType\PostType menuIcon()
+ * @method \Wpint\WPAPI\PostType\PostType capabilities()
+ * @method \Wpint\WPAPI\PostType\PostType capType()
+ * @method \Wpint\WPAPI\PostType\PostType canExport()
+ * @method \Wpint\WPAPI\PostType\PostType mapMetaCap()
+ * @method \Wpint\WPAPI\PostType\PostType supports()
+ * @method \Wpint\WPAPI\PostType\PostType metaBoxCallback()
+ * @method \Wpint\WPAPI\PostType\PostType rewrite()
+ * @method \Wpint\WPAPI\PostType\PostType queryVar()
+ * @method \Wpint\WPAPI\PostType\PostType deleteWIthUser()
+ * @method \Wpint\WPAPI\PostType\PostType template()
+ * @method \Wpint\WPAPI\PostType\PostType templateLock()
+ * @method \Wpint\WPAPI\PostType\PostType builtIn()
+ * @method \Wpint\WPAPI\PostType\PostType editLink()
  * @method void register()
- * 
- * @see \Abrz\WPDF\Services\WPAPI\PostType\PostType
+ *
+ * @see \Wpint\WPAPI\PostType\PostType
  */
-class PostType implements HookContract
+class PostType extends Registrable
 {
 
     /**
@@ -606,9 +606,9 @@ class PostType implements HookContract
      */
     public function showUI(bool $show = true) : self
     {
-        $this->publicly_queryable = isset($show) ? $show : $this->public;
+        $this->show_ui = isset($show) ? $show : $this->public;
         return $this;
-    }  
+    }
 
     /**
      * set $show_in_menu
@@ -935,9 +935,9 @@ class PostType implements HookContract
      */
     public function editLink(string $segment = 'post.php?post=%d') : self
     {
-        $this->_builtin = $segment;
+        $this->_edit_link = $segment;
         return $this;
-    }    
+    }
 
         /**
      * get $name
@@ -982,17 +982,25 @@ class PostType implements HookContract
     /**
      * Get post type's args
      *
-     * @return void
+     * @return array
      */
-    public function getArgs()
+    public function getArgs() : array
     {
-        $vars = get_object_vars($this);
-        foreach($vars as $var => $value)
-        {
-            if($value === null) unset($vars[$var]);
-        }
-        $vars['labels'] =   $this->getLabels();
-        $vars['label']  =   $this->label ?? $this->name;
+        $vars = $this->buildArgs([
+            'description', 'public', 'hierarchical', 'exclude_from_search',
+            'publicly_queryable', 'show_ui', 'show_in_menu', 'show_in_nav_menus',
+            'show_in_admin_bar', 'menu_position', 'menu_icon', 'capability_type',
+            'map_meta_cap', 'register_meta_box_cb', 'taxonomies', 'has_archive',
+            'query_var', 'can_export', 'delete_with_user', 'template', 'template_lock',
+            '_builtin', '_edit_link', 'capabilities', 'rewrite', 'supports',
+            'show_in_rest', 'rest_base', 'rest_namespace', 'rest_controller_class',
+            'revisions_rest_controller_class', 'autosave_rest_controller_class',
+            'late_route_registration',
+        ]);
+
+        $vars['labels'] = $this->getLabels();
+        $vars['label']  = $this->label ?? $this->name;
+
         return $vars;
     }
 

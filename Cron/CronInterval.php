@@ -1,7 +1,7 @@
 <?php 
 namespace Wpint\WPAPI\Cron;
 
-use Wpint\Contracts\Hook\HookContract;
+use Wpint\WPAPI\Support\Registrable;
 
 /**
  * @method \Wpint\WPAPI\Cron\CronInterval name()
@@ -11,7 +11,7 @@ use Wpint\Contracts\Hook\HookContract;
  * 
  * @see \Wpint\WPAPI\Cron\CronInterval
  */
-class CronInterval implements HookContract
+class CronInterval extends Registrable
 {
 
     /**

@@ -1,7 +1,7 @@
 <?php 
 namespace Wpint\WPAPI\Taxonomy;
 
-use Wpint\Contracts\Hook\HookContract;
+use Wpint\WPAPI\Support\Registrable;
 use Illuminate\Support\Str;
 use Wpint\WPAPI\Taxonomy\Enum\TaxonomyCapabilitiesEnum;
 
@@ -30,7 +30,7 @@ use Wpint\WPAPI\Taxonomy\Enum\TaxonomyCapabilitiesEnum;
  * 
  * @see \Wpint\WPAPI\Taxonomy\Taxonomy
  */
-class Taxonomy implements HookContract
+class Taxonomy extends Registrable
 {
 
 
@@ -290,14 +290,14 @@ class Taxonomy implements HookContract
      *
      * @var array
      */
-    private array $postTypes;
+    private array $postTypes = [];
 
     /**
      * $capabilities
      *
      * @var array
      */
-    private array $capabilities;
+    private array $capabilities = [];
 
     /**
      * $_args
@@ -690,7 +690,7 @@ class Taxonomy implements HookContract
      */
     public function getSlug() : string
     {
-        if($this->slug) return Str::slug($this->slug);
+        if($this->prop('slug')) return Str::slug($this->slug);
         return Str::slug($this->name);
     }
 
@@ -701,40 +701,29 @@ class Taxonomy implements HookContract
      */
     public function getArgs() : array
     {
-        $vars = get_object_vars($this);
-        foreach($vars as $var => $value)
-        {
-            if($value === null) unset($vars[$var]);
-        }
-        $vars['labels'] =   $this->getLabels();
-        return $vars;
+        $vars = $this->buildArgs([
+            'description', 'public', 'publicly_queryable', 'hierarchical', 'show_ui',
+            'show_in_menu', 'show_in_nav_menus', 'show_tagcloud', 'show_in_quick_edit',
+            'show_admin_column', 'meta_box_cb', 'meta_box_sanitize_cb', 'object_type',
+            'cap', 'rewrite', 'query_var', 'update_count_callback', 'show_in_rest',
+            'rest_base', 'rest_namespace', 'rest_controller_class', 'default_term',
+            'sort', '_builtIn',
+        ]);
 
-        return array(
-            'labels'            => $this->getLabels(),
-            'description'       => $this->description,
-            'hierarchical'       => $this->hierarchical, // make it hierarchical (like categories)
-            'show_ui'           => $this->show_ui,
-            'show_admin_column' => $this->show_admin_column,
-            'query_var'         => $this->query_var,
-            'public'            => $this->public,
-            'publicly_queryable'    => $this->publicly_queryable,
-            'show_in_nav_menus'     => $this->show_in_nav_menus,
-            'show_in_rest'          => $this->show_in_rest,
-            'rest_base'             => $this->rest_base,
-            'show_in_rest'          => $this->show_in_rest,
-            'rest_namespace'        => $this->rest_namespace,
-            'rest_controller_class' => $this->rest_controller_class,
-            'show_tagcloud'         => $this->show_tagcloud,
-            'show_in_quick_edit'    => $this->show_in_quick_edit,
-            'meta_box_cb'           => $this->meta_box_cb,
-            'meta_box_sanitize_cb'  => $this->meta_box_sanitize_cb,
-            'capabilities'      => $this->capabilities,
-            'sort'              => $this->sort,
-            'args'              => $this->_args,
-            'default_term'      => $this->default_term,
-            '_builtin'          => $this->_builtIn,
-            'rewrite'           => $this->rewrite,
-        );
+        $vars['labels'] = $this->getLabels();
+
+        // $capabilities and $_args are private to this class, so
+        // get_object_vars() inside Registrable::buildArgs() (which runs in
+        // Registrable's own scope) can never see them — append explicitly.
+        if (! empty($this->capabilities)) {
+            $vars['capabilities'] = $this->capabilities;
+        }
+
+        if (! empty($this->_args)) {
+            $vars['args'] = $this->_args;
+        }
+
+        return $vars;
     }
 
     /**
