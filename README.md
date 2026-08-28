@@ -22,7 +22,7 @@ WPAPI::postType()
 
 `register()` defers itself into whatever WordPress lifecycle hook it actually needs (`init`, `admin_init`, `widgets_init`, ...), so it's safe to call at any point during your plugin's bootstrap.
 
-Every security-sensitive default (metabox nonce/capability checks, REST route permission callbacks, AJAX nonce verification, settings sanitizers) is documented per class in [`docs/usage.md`](docs/usage.md), which has one complete, runnable example for every object.
+Every security-sensitive default (metabox nonce/capability checks, REST route permission callbacks, AJAX nonce verification, settings sanitizers) is documented per class in [Documentation](https://github.com/wpint/wpapi/wiki/Documenation), which has one complete, runnable example for every object.
 
 ## License
 
