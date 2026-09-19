@@ -76,7 +76,7 @@ class Cron extends Registrable
      *
      * @return void
      */
-    public function register()
+    public function register() : void
     {
         add_action( $this->name, function(){
             return $this->resolveCallback($this->execute);

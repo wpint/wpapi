@@ -110,7 +110,7 @@ class Metabox extends Registrable
      *
      * @return void
      */
-    public function register()
+    public function register() : void
     {
 
         add_action( 'add_meta_boxes', function()

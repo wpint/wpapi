@@ -311,7 +311,7 @@ class Taxonomy extends Registrable
      *
      * @return void
      */
-    public function register()
+    public function register() : void
     {
        add_action( 'init', function(){
             $args = $this->getArgs();

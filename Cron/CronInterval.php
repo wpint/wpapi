@@ -40,7 +40,7 @@ class CronInterval extends Registrable
      *
      * @return void
      */
-    public function register()
+    public function register() : void
     {
         add_filter( 'cron_schedules', function($schedules)
         {

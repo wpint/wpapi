@@ -101,7 +101,7 @@ class Setting extends Registrable
      *
      * @return void
      */
-    public  function register()
+    public function register() : void
     {
         add_action('admin_init', function(){
 

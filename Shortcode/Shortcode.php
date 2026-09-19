@@ -33,7 +33,7 @@ class Shortcode extends Registrable
      *
      * @return void
      */
-    public function register()
+    public function register() : void
     {
 
         add_shortcode($this->tag, function($attrs, $content){
