@@ -1,7 +1,7 @@
 <?php 
 namespace Wpint\WPAPI\PostType\Enum;
 
-use WPINT\Framework\Include\Traits\EnumToArray;
+use Wpint\Support\Traits\EnumToArray;
 
 enum PostTypeCapabilitiesEnum : string 
 {
